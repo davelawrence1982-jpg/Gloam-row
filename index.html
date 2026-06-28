@@ -1,60 +1,202 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Gloam Row</title>
 
 <style>
+
 body{
     margin:0;
-    background:#111;
-    color:white;
-    font-family:Arial,sans-serif;
     overflow:hidden;
+    background:#020204;
+    color:white;
+    font-family:Arial, sans-serif;
 }
 
-#title{
+canvas{
+    position:fixed;
+    left:0;
+    top:0;
+    z-index:-1;
+}
+
+#menu{
     text-align:center;
     margin-top:120px;
 }
 
 h1{
-    font-size:60px;
-    color:#d9c27a;
+    font-size:72px;
+    color:#caa84d;
+    text-shadow:0 0 20px gold;
+    animation:glow 3s infinite alternate;
+}
+
+.subtitle{
+    color:#ddd;
+    margin-bottom:50px;
+    font-size:22px;
 }
 
 button{
-    margin-top:40px;
-    padding:15px 40px;
-    font-size:24px;
-    background:#444;
+    display:block;
+    width:260px;
+    margin:18px auto;
+    padding:18px;
+    font-size:28px;
+    background:#333;
     color:white;
-    border:2px solid #888;
-    cursor:pointer;
+    border:2px solid #777;
+    transition:.2s;
 }
 
 button:hover{
-    background:#666;
+    background:#777;
+    transform:scale(1.05);
 }
-</style>
 
+@keyframes glow{
+
+from{
+text-shadow:0 0 10px gold;
+}
+
+to{
+text-shadow:0 0 35px orange;
+}
+
+}
+
+</style>
 </head>
 
 <body>
 
-<div id="title">
+<canvas id="bg"></canvas>
+
+<div id="menu">
+
 <h1>🌙 GLOAM ROW</h1>
 
-<p>A Fantasy RTS inspired by Carnival Row</p>
+<div class="subtitle">
+A Fantasy RTS inspired by Carnival Row
+</div>
 
-<button onclick="startGame()">New Game</button>
+<button onclick="newGame()">New Game</button>
+
+<button onclick="alert('Coming Soon')">Skirmish</button>
+
+<button onclick="alert('Coming Soon')">Options</button>
+
+<button onclick="alert('Coming Soon')">Credits</button>
 
 </div>
 
 <script>
-function startGame(){
-    alert("Welcome to Gloam Row! The adventure begins...");
+
+const canvas=document.getElementById("bg");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+const stars=[];
+
+for(let i=0;i<180;i++){
+
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:Math.random()*2,
+a:Math.random()
+});
+
 }
+
+function draw(){
+
+ctx.fillStyle="#020204";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+for(let s of stars){
+
+ctx.fillStyle="rgba(255,255,220,"+s.a+")";
+
+ctx.beginPath();
+ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+ctx.fill();
+
+s.a+=((Math.random()-0.5)*0.03);
+
+if(s.a<0.2)s.a=0.2;
+if(s.a>1)s.a=1;
+
+}
+
+requestAnimationFrame(draw);
+
+}
+
+draw();
+
+function newGame(){
+
+document.body.innerHTML=`
+
+<canvas id="game"></canvas>
+
+<div style="
+position:absolute;
+top:20px;
+left:20px;
+background:#222;
+padding:10px;
+border:2px solid #666;
+font-size:22px;
+">
+
+🏰 Gold: 500<br>
+🌲 Wood: 250<br>
+⛏ Stone: 100
+
+</div>
+
+`;
+
+const game=document.getElementById("game");
+const g=game.getContext("2d");
+
+game.width=window.innerWidth;
+game.height=window.innerHeight;
+
+g.fillStyle="#2f6b2f";
+g.fillRect(0,0,game.width,game.height);
+
+g.fillStyle="#184018";
+
+for(let i=0;i<200;i++){
+
+g.beginPath();
+
+g.arc(Math.random()*game.width,
+Math.random()*game.height,
+6,0,Math.PI*2);
+
+g.fill();
+
+}
+
+g.fillStyle="#777";
+
+g.fillRect(game.width/2-40,game.height/2-40,80,80);
+
+g.fillStyle="white";
+
+g.fillText("Town Hall",game.width/2-30,game.height/2+60);
+
+}
+
 </script>
 
 </body>
